@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RED TAG Form - Robotics Warehouse</title>
+    
+    <!-- ================================ -->
+    <!-- CSS STYLES SECTION -->
+    <!-- ================================ -->
+    <style>
+        /* RESET AND BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, rgba(0,50,100,0.8), rgba(0,30,60,0.6)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f0f8ff"/><circle cx="20" cy="20" r="2" fill="%23ddeeff"/><circle cx="80" cy="20" r="2" fill="%23ddeeff"/><circle cx="20" cy="80" r="2" fill="%23ddeeff"/><circle cx="80" cy="80" r="2" fill="%23ddeeff"/></svg>');
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* CONTAINER STYLES */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* HEADER STYLES */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #2196F3, #1565C0);
+            color: white;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: url('./images/background.png'); /* Replace with a relative path or valid URL */
+            background-size: contain;
+            border-radius: 50%;
+        }
+
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* FORM GRID STYLES */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* FORM GROUP STYLES */
+        .form-group {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #2196F3;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1565C0;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E3F2FD;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.2);
+        }
+
+        /* CUSTOM DROPDOWN STYLES */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .dropdown-header {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E3F2FD;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-header:hover {
+            border-color: #90CAF9;
+        }
+
+        .dropdown-header.active {
+            border-color: #2196F3;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.2);
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-header.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            margin-top: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .dropdown-options.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #E3F2FD;
+        }
+
+        .radio-option:last-child {
+            border-bottom: none;
+        }
+
+        .radio-option:hover {
+            background: #E3F2FD;
+        }
+
+        .radio-option input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #90CAF9;
+            border-radius: 50%;
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"]:checked {
+            background: #2196F3;
+            border-color: #2196F3;
+        }
+
+        .radio-option input[type="radio"]:checked::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .radio-option span {
+            font-size: 15px;
+            color: #333;
+        }
+
+        .radio-option input[type="radio"]:checked + span {
+            font-weight: bold;
+            color: #1565C0;
+        }
+
+        /* SPECIAL SERIAL NUMBER FIELDS */
+        .special-fields {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            border-left: 4px solid #FF9800;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .special-fields label {
+            color: #E65100;
+        }
+
+        .special-fields select[multiple] {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* CHECKBOX STYLES */
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border: 2px solid #FFB74D;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-option:hover {
+            background: #FFF8E1;
+            border-color: #FF9800;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(255, 152, 0, 0.2);
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #FF9800;
+            border-radius: 4px;
+            margin-right: 8px;
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-option input[type="checkbox"]:checked {
+            background: #FF9800;
+            border-color: #F57C00;
+        }
+
+        .checkbox-option input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .checkbox-option span {
+            font-size: 15px;
+            color: #E65100;
+            font-weight: 500;
+        }
+
+        /* FILE UPLOAD STYLES */
+        .file-upload {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .file-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .file-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* ACTION BUTTONS STYLES */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .print-btn {
+            background: linear-gradient(135deg, #42A5F5, #1E88E5);
+            color: white;
+        }
+
+        .pdf-btn {
+            background: linear-gradient(135deg, #64B5F6, #2196F3);
+            color: white;
+        }
+
+        .excel-btn {
+            background: linear-gradient(135deg, #90CAF9, #42A5F5);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+        }
+
+        /* ANALYTICS SECTION STYLES */
+        .analytics-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            border-radius: 15px;
+            border: 2px solid #90CAF9;
+        }
+
+        .analytics-title {
+            font-size: 1.8rem;
+            color: #1565C0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .analytics-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.1);
+            text-align: center;
+            border: 1px solid #E3F2FD;
+        }
+
+        .analytics-card h3 {
+            color: #1976D2;
+            margin-bottom: 15px;
+        }
+
+        /* STATUS MESSAGE STYLES */
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .success {
+            background: #E8F5E8;
+            color: #2E7D32;
+            border: 1px solid #C8E6C9;
+        }
+
+        .error {
+            background: #FFEBEE;
+            color: #C62828;
+            border: 1px solid #FFCDD2;
+        }
+
+        /* RESPONSIVE STYLES */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .file-upload {
+                flex-direction: column;
+            }
+        }
+
+        /* PRINT STYLES */
+        @media print {
+          input[type="checkbox"]:checked {
+            background: #FF9800 !important;
+            border: 2px solid #E65100 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+
+
+            .container {
+                max-width: 100%;
+                margin: 0;
+                padding: 10px;
+                box-shadow: none;
+                background: white !important;
+            }
+
+            .header {
+                background: none !important;
+                color: #1565C0 !important;
+                padding: 10px !important;
+                margin-bottom: 10px !important;
+                border: 2px solid #1565C0;
+            }
+
+            .header h1 {
+                font-size: 1.8rem !important;
+                color: #1565C0 !important;
+                text-shadow: none !important;
+            }
+
+            .header p {
+                color: #1565C0 !important;
+            }
+
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+                margin-bottom: 15px !important;
+            }
+
+            .form-group {
+                padding: 10px !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                page-break-inside: avoid;
+            }
+
+            .form-group label {
+                font-size: 12px !important;
+                margin-bottom: 3px !important;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 5px !important;
+                font-size: 12px !important;
+                border: 1px solid #999 !important;
+                background: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .special-fields {
+                background: white !important;
+                border: 2px solid #FF9800 !important;
+                page-break-inside: avoid;
+            }
+
+            .special-fields h3 {
+                font-size: 14px !important;
+                margin-bottom: 10px !important;
+            }
+
+            textarea {
+                min-height: 50px !important;
+                max-height: 80px !important;
+            }
+
+            select[multiple] {
+                min-height: 60px !important;
+                max-height: 60px !important;
+            }
+
+            /* Hide non-printable elements */
+            .action-buttons,
+            .analytics-section,
+            .file-upload button,
+            .status-message,
+            #charCount,
+            .dropdown-arrow,
+            .dropdown-options {
+                display: none !important;
+            }
+
+            /* Show selected values in dropdowns */
+            .dropdown-header {
+                border: 1px solid #999 !important;
+                cursor: default !important;
+            }
+
+            /* Show file list but hide remove buttons */
+            #fileList button {
+                display: none !important;
+            }
+
+            /* Compact spacing */
+            * {
+                margin: 0 !important;
+                padding: 2px !important;
+            }
+
+            .form-group {
+                padding: 8px !important;
+            }
+
+            /* Force single page */
+            html, body {
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            /* Ensure content fits on one page */
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ================================ -->
+    <!-- HTML STRUCTURE SECTION -->
+    <!-- ================================ -->
+    
+    <div class="container">
+        <!-- HEADER SECTION -->
+        <div class="header">
+            <h1>RED TAG</h1>
+            <p>Asset Malfunction & Part Replacement Form</p>
+        </div>
+
+        <!-- MAIN FORM SECTION -->
+        <form id="redTagForm">
+            <!-- FORM GRID WITH INPUT FIELDS -->
+            <div class="form-grid">
+                <!-- MFC SELECTION -->
+                <div class="form-group">
+                    <label>MFC *</label>
+                    <div class="custom-dropdown">
+                        <div class="dropdown-header" onclick="toggleDropdown('mfcDropdown')">
+                            <span id="mfcDisplay">Select MFC</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div id="mfcDropdown" class="dropdown-options">
+                            <label class="radio-option">
+                                <input type="radio" name="mfc" value="HLN01" onchange="updateDropdown('mfc', 'HLN01')" required>
+                                <span>HLN01</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="mfc" value="EMK01" onchange="updateDropdown('mfc', 'EMK01')" required>
+                                <span>EMK01</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="mfc" value="BS01" onchange="updateDropdown('mfc', 'BS01')" required>
+                                <span>BS01</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="mfc" value="DAL01" onchange="updateDropdown('mfc', 'DAL01')" required>
+                                <span>DAL01</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="mfc" value="NYC01" onchange="updateDropdown('mfc', 'NYC01')" required>
+                                <span>NYC01</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REMOVAL DATE -->
+                <div class="form-group">
+                    <label for="removalDate">Removal Date *</label>
+                    <input type="date" id="removalDate" name="removalDate" required>
+                </div>
+
+                <!-- TAGGED BY -->
+                <div class="form-group">
+                    <label for="taggedBy">Tagged By *</label>
+                    <input type="text" id="taggedBy" name="taggedBy" placeholder="Enter your name" required>
+                </div>
+
+                <!-- ITEM TYPE -->
+                <div class="form-group">
+                    <label>Item Type *</label>
+                    <div class="custom-dropdown">
+                        <div class="dropdown-header" onclick="toggleDropdown('itemTypeDropdown')">
+                            <span id="itemTypeDisplay">Select Item Type</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div id="itemTypeDropdown" class="dropdown-options">
+                            <label class="radio-option">
+                                <input type="radio" name="itemType" value="Spare Part" onchange="updateDropdown('itemType', 'Spare Part')" required>
+                                <span>Spare Part</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="itemType" value="NOT Spare Part" onchange="updateDropdown('itemType', 'NOT Spare Part')" required>
+                                <span>NOT Spare Part</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PART NUMBER -->
+                <div class="form-group">
+                    <label for="partNumber">Part Number *</label>
+                    <input type="text" id="partNumber" name="partNumber" placeholder="Enter part number" oninput="checkPartNumber()">
+                </div>
+
+                <!-- SERIAL NUMBER -->
+                <div class="form-group">
+                    <label for="serialNumber">Serial Number</label>
+                    <input type="text" id="serialNumber" name="serialNumber" placeholder="Enter serial number"  required> 
+                </div>
+
+                <!-- REMOVED FROM (ASSET SN) -->
+                <div class="form-group">
+                    <label for="removedFrom">Removed From (Asset SN) *</label>
+                    <input type="text" id="removedFrom" name="removedFrom" placeholder="Enter asset serial number" required>
+                </div>
+
+                <!-- SERVICE CALL ID -->
+                <div class="form-group">
+                    <label for="serviceCallId">Service Call ID *</label>
+                    <input type="text" id="serviceCallId" name="serviceCallId" placeholder="Enter service call ID">
+                </div>
+
+                <!-- REASON OF REMOVE -->
+                <div class="form-group">
+                    <label>Reason of Remove *</label>
+                    <div class="custom-dropdown">
+                        <div class="dropdown-header" onclick="toggleDropdown('reasonRemoveDropdown')">
+                            <span id="reasonRemoveDisplay">Select Reason</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div id="reasonRemoveDropdown" class="dropdown-options">
+                            <label class="radio-option">
+                                <input type="radio" name="reasonRemove" value="Defected" onchange="updateDropdown('reasonRemove', 'Defected')" required>
+                                <span>Defected</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reasonRemove" value="Required For R&D" onchange="updateDropdown('reasonRemove', 'Required For R&D')" required>
+                                <span>Required For R&D</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- SPECIAL SERIAL NUMBER FIELDS -->
+            <div id="extraFields" class="form-group special-fields">
+                <h3 style="color: #E65100; margin-bottom: 20px;">🔧 Special Asset Configuration</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Motor Numbers (Multiple Selection Allowed) *</label>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="motorNumbers" value="M1">
+                            <span>M1</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="motorNumbers" value="M2">
+                            <span>M2</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="motorNumbers" value="M3">
+                            <span>M3</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="motorNumbers" value="M4">
+                            <span>M4</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="motorNumbers" value="M5">
+                            <span>M5</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="motorNumbers" value="M6">
+                            <span>M6</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="motorNumbers" value="M7">
+                            <span>M7</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="motorNumbers" value="M8">
+                            <span>M8</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label>Reason for Replacement *</label>
+                    <div class="custom-dropdown">
+                        <div class="dropdown-header" onclick="toggleDropdown('reasonDropdown')">
+                            <span id="reasonDisplay">-- Select Reason --</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div id="reasonDropdown" class="dropdown-options">
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="Brake motor rotates freely" onchange="updateDropdown('reason', 'Brake motor rotates freely')" required>
+                                <span>Brake motor rotates freely</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="Ticking Noises" onchange="updateDropdown('reason', 'Ticking Noises')" required>
+                                <span>Ticking Noises</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="Motor test Failures; current/torque out of spec." onchange="updateDropdown('reason', 'Motor test Failures; current/torque out of spec.')" required>
+                                <span>Motor test Failures; current/torque out of spec.</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="Damaged Cable/connector" onchange="updateDropdown('reason', 'Damaged Cable/connector')" required>
+                                <span>Damaged Cable/connector</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="Resolver cable interrupted" onchange="updateDropdown('reason', 'Resolver cable interrupted')" required>
+                                <span>Resolver cable interrupted</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="Autophase Failure" onchange="updateDropdown('reason', 'Autophase Failure')" required>
+                                <span>Autophase Failure</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="Other" onchange="updateDropdown('reason', 'Other')" required>
+                                <span>Other</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAILURE DETAILS DESCRIPTION SECTION -->
+            <div class="form-group">
+                <label for="comments">Failure Details Description *</label>
+                <textarea id="comments" name="comments" rows="6" placeholder="Please provide detailed description of the failure (minimum 50 characters required)..." required minlength="50"></textarea>
+                <small id="charCount" style="color: #666; display: block; margin-top: 5px;">50 / 100 minimum characters</small>
+            </div>
+
+            <!-- FILE ATTACHMENT SECTION -->
+            <div class="form-group">
+                <label>Attach Files</label>
+                <div class="file-upload">
+                    <button type="button" class="file-btn" onclick="useCamera()">📷 Use Camera</button>
+                    <button type="button" class="file-btn" onclick="chooseFile()">📁 Choose File</button>
+                    <input type="file" id="fileInput" style="display: none;" multiple accept="image/*,.pdf,.doc,.docx">
+                    <input type="file" id="cameraInput" style="display: none;" accept="image/*" capture="camera">
+                </div>
+                <div id="fileList" style="margin-top: 10px;"></div>
+            </div>
+
+            <!-- ACTION BUTTONS SECTION -->
+            <div class="action-buttons">
+                <button type="button" class="action-btn save-btn" onclick="saveForm()">💾 Save Form</button>
+                <button type="button" class="action-btn print-btn" onclick="printForm()">🖨️ Print</button>
+                <button type="button" class="action-btn pdf-btn" onclick="saveAsPDF()">📄 Save as PDF</button>
+                <button type="button" class="action-btn excel-btn" onclick="exportToExcel()">📊 Export to Excel</button>
+            </div>
+        </form>
+
+        <!-- STATUS MESSAGE SECTION -->
+        <div id="statusMessage" class="status-message"></div>
+
+        <!-- AI ANALYTICS DASHBOARD SECTION -->
+        <div class="analytics-section">
+            <h2 class="analytics-title">🤖 AI Analytics Dashboard</h2>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Most Replaced Parts</h3>
+                    <div id="topParts">Loading analytics...</div>
+                </div>
+                <div class="analytics-card">
+                    <h3>Most Handled Assets</h3>
+                    <div id="topAssets">Loading analytics...</div>
+                </div>
+                <div class="analytics-card">
+                    <h3>Failure Trends</h3>
+                    <div id="failureTrends">Loading analytics...</div>
+                </div>
+                <div class="analytics-card">
+                    <h3>MFC Performance</h3>
+                    <div id="mfcStats">Loading analytics...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- JAVASCRIPT SECTION -->
+    <!-- ================================ -->
+    <script>
+        // =================================
+        // GLOBAL VARIABLES AND INITIALIZATION
+        // =================================
+        
+        let formDatabase = [];
+        let attachedFiles = [];
+
+        // Valid serial numbers (case-insensitive)
+        const validSerials = [
+            "SP-MA-0969-02",
+            "sp-ma-0969-02",
+            "SP-MA-0874-03",
+            "sp-ma-0874-03",
+            "MA-0874-04",
+            "ma-0874-04",
+            "SP-MA-0970-02",
+            "sp-ma-0970-02",
+            "SP-MA-0873-03",
+            "sp-ma-0873-03",
+            "MA-0873-04",
+            "ma-0873-04"
+        ];
+
+        function setupPartNumberTrigger() {
+            const partNumberInput = document.getElementById("partNumber");
+            const motorSection = document.getElementById("extraFields");
+
+         // Hide motor section initially
+            motorSection.style.display = "none";
+
+            partNumberInput.addEventListener("input", function () {
+                const value = partNumberInput.value.trim().toLowerCase();
+                const isSpecial = validSerials.includes(value);
+
+                motorSection.style.display = isSpecial ? "block" : "none";
+            });
+        }
+
+        // Initialize application when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStoredData();
+            updateAnalytics();
+            setDefaultDate();
+            setupCharacterCounter();
+            setupDropdowns();
+            setupPartNumberTrigger();
+        });
+
+        // =================================
+        // INITIALIZATION FUNCTIONS
+        // =================================
+        
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('removalDate').value = today;
+        }
+
+        function setupCharacterCounter() {
+            const textarea = document.getElementById('comments');
+            const charCount = document.getElementById('charCount');
+            
+            textarea.addEventListener('input', function() {
+                const currentLength = this.value.length;
+                const minLength = 50;
+                
+                if (currentLength < minLength) {
+                    charCount.innerHTML = `<span style="color: #E65100;">${currentLength} / ${minLength} minimum characters</span>`;
+                } else {
+                    charCount.innerHTML = `<span style="color: #2E7D32;">${currentLength} characters ✓</span>`;
+                }
+            });
+        }
+
+        // =================================
+        // DROPDOWN FUNCTIONS
+        // =================================
+        
+        function setupDropdowns() {
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.custom-dropdown')) {
+                    closeAllDropdowns();
+                }
+            });
+        }
+
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const header = dropdown.previousElementSibling;
+            const isOpen = dropdown.classList.contains('show');
+            
+            // Close all other dropdowns
+            closeAllDropdowns();
+            
+            // Toggle this dropdown
+            if (!isOpen) {
+                dropdown.classList.add('show');
+                header.classList.add('active');
+            }
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-options').forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+            document.querySelectorAll('.dropdown-header').forEach(header => {
+                header.classList.remove('active');
+            });
+        }
+
+        function updateDropdown(fieldName, value) {
+            const displayElement = document.getElementById(fieldName + 'Display');
+            displayElement.textContent = value;
+            
+            // Close the dropdown
+            closeAllDropdowns();
+        }
+
+        function loadStoredData() {
+            // Simulate loading from company database
+            const mockData = [
+                {id: 1, mfc: 'HLN01', serialNumber: 'SP-MA-0970-02', removedFrom: 'LR00002240', reasonRemove: 'Defected', date: '2024-01-15'},
+                {id: 2, mfc: 'EMK01', serialNumber: 'SP-MA-0873-03', removedFrom: 'LR00002241', reasonRemove: 'Scrap', date: '2024-01-20'},
+                {id: 3, mfc: 'HLN01', serialNumber: 'SP-MA-0969-02', removedFrom: 'LR00002242', reasonRemove: 'Defected', date: '2024-02-01'},
+                {id: 4, mfc: 'BS01', serialNumber: 'SP-MA-0970-02', removedFrom: 'LR00002243', reasonRemove: 'Required For R&D', date: '2024-02-10'},
+                {id: 5, mfc: 'EMK01', serialNumber: 'MA-0874-04', removedFrom: 'LR00002244', reasonRemove: 'Defected', date: '2024-02-15'}
+            ];
+            formDatabase = mockData;
+        }
+
+        // =================================
+        // PART NUMBER CHECKING FUNCTION
+        // =================================
+        
+        function checkPartNumber() {
+            const pn = document.getElementById("partNumber").value.trim();
+            const extraFields = document.getElementById("extraFields");
+            
+            // Check if the entered serial number matches any valid serial (case-insensitive)
+            const isValidSerial = validSerials.some(validSN => 
+                validSN.toLowerCase() === sn.toLowerCase()
+            );
+
+            console.log("Part number entered:", pn);
+            console.log("Is valid serial:", isValidSerial);
+            
+            if (isValidSerial) {
+                extraFields.style.display = "block";
+                // Add animation effect
+                extraFields.style.opacity = "0";
+                extraFields.style.transform = "translateY(-10px)";
+                setTimeout(() => {
+                    extraFields.style.transition = "all 0.3s ease";
+                    extraFields.style.opacity = "1";
+                    extraFields.style.transform = "translateY(0)";
+                }, 10);
+                
+                // Set required attributes when fields are shown
+                document.querySelectorAll('input[name="reason"]').forEach(radio => radio.setAttribute("required", "required"));
+                document.querySelectorAll('input[name="motorNumbers"]').forEach(checkbox => checkbox.setAttribute("required", "required"));
+            } else {
+                extraFields.style.display = "none";
+                // Clear the special fields when hidden
+                document.querySelectorAll('input[name="reason"]').forEach(radio => radio.checked = false);
+                document.getElementById('reasonDisplay').textContent = '-- Select Reason --';
+                document.querySelectorAll('input[name="motorNumbers"]').forEach(checkbox => checkbox.checked = false);
+                
+                // Remove required attributes when fields are hidden
+                document.querySelectorAll('input[name="reason"]').forEach(radio => radio.removeAttribute("required"));
+                document.querySelectorAll('input[name="motorNumbers"]').forEach(checkbox => checkbox.removeAttribute("required"));
+            }
+        }
+
+        // =================================
+        // FILE HANDLING FUNCTIONS
+        // =================================
+        
+        function useCamera() {
+            document.getElementById('cameraInput').click();
+        }
+
+        function chooseFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        // Event listeners for file inputs
+        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+        document.getElementById('cameraInput').addEventListener('change', handleFileSelect);
+
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            attachedFiles = attachedFiles.concat(files);
+            updateFileList();
+        }
+
+        function updateFileList() {
+            const fileList = document.getElementById('fileList');
+            if (attachedFiles.length === 0) {
+                fileList.innerHTML = '';
+                return;
+            }
+
+            fileList.innerHTML = '<strong>Attached Files:</strong><br>' + 
+                attachedFiles.map((file, index) => 
+                    `<span style="display: inline-block; margin: 5px; padding: 5px 10px; background: #E3F2FD; border-radius: 15px; font-size: 14px; border: 1px solid #90CAF9;">
+                        ${file.name} <button onclick="removeFile(${index})" style="border: none; background: none; color: #1976D2; cursor: pointer; font-weight: bold;">×</button>
+                    </span>`
+                ).join('');
+        }
+
+        function removeFile(index) {
+            attachedFiles.splice(index, 1);
+            updateFileList();
+        }
+
+        // =================================
+        // FORM SUBMISSION AND SAVING FUNCTIONS
+        // =================================
+        
+        function saveForm() {
+            const form = document.getElementById('redTagForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Validate required fields
+            const requiredFields = ['mfc', 'removalDate', 'taggedBy', 'itemType', 'removedFrom', 'reasonRemove', 'comments'];
+            const missingFields = requiredFields.filter(field => !data[field]);
+            
+            // Check comments minimum length
+            if (data.comments && data.comments.length < 50) {
+                showMessage('Failure Details Description must be at least 50 characters long. Currently: ' + data.comments.length + ' characters.', 'error');
+                return;
+            }
+            
+            // Check if special fields are visible and if they are required
+            const extraFieldsVisible = document.getElementById('extraFields').style.display === 'block';
+            if (extraFieldsVisible) {
+                const selectedReason = document.querySelector('input[name="reason"]:checked');
+                if (!selectedReason) {
+                    missingFields.push('reason (replacement reason)');
+                }
+                const motorSelect = document.getElementById('motorNumbers');
+                const selectedMotors = Array.from(motorSelect.selectedOptions).map(option => option.value);
+                if (selectedMotors.length === 0) {
+                    missingFields.push('motor numbers');
+                }
+            }
+            
+            if (missingFields.length > 0) {
+                showMessage('Please fill in all required fields: ' + missingFields.join(', '), 'error');
+                return;
+            }
+
+            // Handle multiple motor numbers selection
+            const selectedMotors = Array.from(document.querySelectorAll('input[name="motorNumbers"]:checked')).map(checkbox => checkbox.value);
+            data.motorNumbers = selectedMotors;
+
+            // Add timestamp and ID
+            data.id = Date.now();
+            data.timestamp = new Date().toISOString();
+            data.attachedFiles = attachedFiles.map(f => f.name);
+
+            // Add to database
+            formDatabase.push(data);
+            
+            // Simulate saving to company server
+            simulateServerSave(data);
+            
+            // Send to Slack (simulation)
+            sendToSlack(data);
+            
+            // Update analytics
+            updateAnalytics();
+            
+            // Clear form
+            form.reset();
+            attachedFiles = [];
+            updateFileList();
+            setDefaultDate();
+            document.getElementById('extraFields').style.display = 'none';
+            
+            // Reset dropdown displays
+            document.getElementById('mfcDisplay').textContent = 'Select MFC';
+            document.getElementById('itemTypeDisplay').textContent = 'Select Item Type';
+            document.getElementById('reasonRemoveDisplay').textContent = 'Select Reason';
+            document.getElementById('reasonDisplay').textContent = '-- Select Reason --';
+            
+            showMessage('Form saved successfully! Backup sent to Slack channel.', 'success');
+        }
+
+        function simulateServerSave(data) {
+            // Simulate API call to company server
+            console.log('Saving to company database:', data);
+            // In real implementation, this would be:
+            // fetch('/api/red-tag', { method: 'POST', body: JSON.stringify(data) })
+        }
+
+        function sendToSlack(data) {
+            // Get special fields data
+            const selectedReason = document.querySelector('input[name="reason"]:checked');
+            const reason = selectedReason ? selectedReason.value : "N/A";
+            const motorNumbers = Array.from(document.querySelectorAll('input[name="motorNumbers"]:checked'))
+                .map(checkbox => checkbox.value).join(', ') || "N/A";
+
+            const slackMessage = {
+                text: "🚨 RED TAG Alert - New Form Submitted",
+                attachments: [{
+                    color: '#1976d2',
+                    fields: [
+                        { title: 'MFC', value: data.mfc, short: true },
+                        { title: 'Part Number', value: data.partNumber || "N/A", short: true },
+                        { title: 'Serial Number', value: data.serialNumber || "N/A", short: true },
+                        { title: 'Asset SN', value: data.removedFrom, short: true },
+                        { title: 'Reason for Remove', value: data.reasonRemove, short: true },
+                        { title: 'Tagged By', value: data.taggedBy, short: true },
+                        { title: 'Date', value: data.removalDate, short: true },
+                        { title: 'Service Call ID', value: data.serviceCallId || "N/A", short: true },
+                        { title: 'Item Type', value: data.itemType, short: true },
+                        { title: 'Replacement Reason', value: reason, short: true },
+                        { title: 'Motor Numbers', value: motorNumbers, short: true }
+                    ],
+                    footer: `Submitted at ${new Date().toLocaleString()}`
+                }]
+            };
+
+            // Simulate Slack webhook call
+            console.log('Sending to Slack:', slackMessage);
+            
+            // In real implementation, uncomment below:
+            /*
+            fetch('https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(slackMessage)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Slack webhook failed');
+                console.log('Slack notification sent');
+            })
+            .catch(error => {
+                console.error('Slack error:', error);
+                showMessage('Slack notification failed.', 'error');
+            });
+            */
+        }
+
+        // =================================
+        // EXPORT AND PRINT FUNCTIONS
+        // =================================
+        
+        function printForm() {
+            // Add print class to body for additional control
+            document.body.classList.add('printing');
+            
+            // Store original values for selects and inputs to show in print
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (input.type === 'select-one' || input.type === 'select-multiple') {
+                    const selectedText = Array.from(input.selectedOptions).map(opt => opt.text).join(', ');
+                    input.setAttribute('data-print-value', selectedText);
+                }
+            });
+            
+            window.print();
+            
+            // Remove print class after printing
+            setTimeout(() => {
+                document.body.classList.remove('printing');
+            }, 1000);
+        }
+
+        async function saveAsPDF() {
+            showMessage('Generating PDF. Please wait...', 'success');
+
+            const formElement = document.getElementById('redTagForm');
+
+            try {
+                const canvas = await html2canvas(formElement);
+                const imgData = canvas.toDataURL('image/png');
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF();
+
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pageWidth - 20;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
+                pdf.save('red-tag-form.pdf');
+
+                showMessage('PDF downloaded successfully!', 'success');
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                showMessage('Failed to generate PDF.', 'error');
+            }
+        }
+
+        function exportToExcel() {
+            // Create CSV content with new fields
+            const headers = ['ID', 'MFC', 'Date', 'Tagged By', 'Item Type', 'Part Number', 'Serial Number', 'Asset SN', 'Service Call ID', 'Reason', 'Replacement Reason', 'Motor Numbers', 'Comments'];
+            const csvContent = [
+                headers.join(','),
+                ...formDatabase.map(row => [
+                    row.id || '',
+                    row.mfc || '',
+                    row.removalDate || row.date || '',
+                    row.taggedBy || '',
+                    row.itemType || '',
+                    row.partNumber || '',
+                    row.serialNumber || '',
+                    row.removedFrom || '',
+                    row.serviceCallId || '',
+                    row.reasonRemove || '',
+                    row.reason || '',
+                    Array.isArray(row.motorNumbers) ? row.motorNumbers.join(';') : (row.motorNumbers || ''),
+                    (row.comments || '').replace(/,/g, ';')
+                ].join(','))
+            ].join('\n');
+
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `red-tag-export-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            showMessage('Excel export completed successfully!', 'success');
+        }
+
+        // =================================
+        // AI ANALYTICS FUNCTIONS
+        function updateAnalytics() {
+            // AI-powered analytics
+            const analytics = performAIAnalysis(formDatabase);
+            
+            // Update UI with analytics
+            document.getElementById('topParts').innerHTML = formatTopItems(analytics.topParts);
+            document.getElementById('topAssets').innerHTML = formatTopItems(analytics.topAssets);
+            document.getElementById('failureTrends').innerHTML = formatTrends(analytics.trends);
+            document.getElementById('mfcStats').innerHTML = formatMFCStats(analytics.mfcStats);
+        }
+
+        function performAIAnalysis(data) {
+            if (data.length === 0) {
+                return {
+                    topParts: [{ name: 'No data yet', count: 0 }],
+                    topAssets: [{ name: 'No data yet', count: 0 }],
+                    trends: { trend: 'Insufficient data' },
+                    mfcStats: [{ name: 'No data yet', count: 0 }]
+                };
+            }
+
+            // Analyze most replaced parts
+            const partCounts = {};
+            const assetCounts = {};
+            const mfcCounts = {};
+            const reasonCounts = {};
+
+            data.forEach(record => {
+                partCounts[record.partNumber] = (partCounts[record.partNumber] || 0) + 1;
+                assetCounts[record.removedFrom] = (assetCounts[record.removedFrom] || 0) + 1;
+                mfcCounts[record.mfc] = (mfcCounts[record.mfc] || 0) + 1;
+                reasonCounts[record.reasonRemove] = (reasonCounts[record.reasonRemove] || 0) + 1;
+            });
+
+            const topParts = Object.entries(partCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5)
+                .map(([name, count]) => ({ name, count }));
+
+            const topAssets = Object.entries(assetCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5)
+                .map(([name, count]) => ({ name, count }));
+
+            const mfcStats = Object.entries(mfcCounts)
+                .sort(([,a], [,b]) => b - a)
+                .map(([name, count]) => ({ name, count }));
+
+            // Simple trend analysis
+            const recentData = data.filter(record => {
+                const recordDate = new Date(record.date || record.removalDate);
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                return recordDate >= thirtyDaysAgo;
+            });
+
+            const trends = {
+                trend: recentData.length > data.length * 0.6 ? 
+                    'Increasing failure rate' : 
+                    'Stable failure rate',
+                recentCount: recentData.length,
+                totalCount: data.length
+            };
+
+            return { topParts, topAssets, trends, mfcStats };
+        }
+
+        // =================================
+        // UI FORMATTING FUNCTIONS
+        // =================================
+        
+        function formatTopItems(items) {
+            if (items.length === 0 || items[0].count === 0) {
+                return '<em>No data available</em>';
+            }
+            
+            return items.map((item, index) => 
+                `<div style="margin: 5px 0; padding: 8px; background: ${index === 0 ? '#E3F2FD' : '#f5f5f5'}; border-radius: 5px; border-left: 3px solid ${index === 0 ? '#2196F3' : '#ddd'};">
+                    <strong>${item.name}</strong><br />
+                    <small>${item.count} occurrences</small>
+                </div>`
+            ).join('');
+        }
+
+        function formatTrends(trends) {
+            const trendColor = trends.trend.includes('Increasing') ? '#1976D2' : '#2E7D32';
+            return `
+                <div style="text-align: center;">
+                    <div style="color: ${trendColor}; font-weight: bold; margin-bottom: 10px;">
+                        ${trends.trend}
+                    </div>
+                    <div style="font-size: 12px; color: #666;">
+                        Recent: ${trends.recentCount || 0} | Total: ${trends.totalCount || 0}
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatMFCStats(stats) {
+            if (stats.length === 0 || stats[0].count === 0) {
+                return '<em>No data available</em>';
+            }
+            
+            const total = stats.reduce((sum, stat) => sum + stat.count, 0);
+            return stats.map(stat => {
+                const percentage = Math.round((stat.count / total) * 100);
+                return `
+                    <div style="margin: 5px 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                            <span><strong>${stat.name}</strong></span>
+                            <span>${stat.count} (${percentage}%)</span>
+                        </div>
+                        <div style="background: #E3F2FD; height: 8px; border-radius: 4px; overflow: hidden;">
+                            <div style="background: #2196F3; height: 100%; width: ${percentage}%; transition: width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // =================================
+        // UTILITY FUNCTIONS
+        // =================================
+        
+        function showMessage(message, type) {
+            const messageEl = document.getElementById('statusMessage');
+            messageEl.textContent = message;
+            messageEl.className = `status-message ${type}`;
+            messageEl.style.display = 'block';
+            
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
+
+        // =================================
+        // AUTO-SAVE FUNCTIONALITY
+        // =================================
+        
+        let saveTimeout;
+        document.getElementById('redTagForm').addEventListener('input', function() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                // Auto-save draft logic would go here
+                console.log('Auto-saving draft...');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
